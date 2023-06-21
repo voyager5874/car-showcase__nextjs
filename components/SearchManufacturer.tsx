@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Fragment, useState } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { carManufacturers } from "@/constants";
+import { useSearchParams } from "next/navigation";
 
 type PropsType = {
   manufacturer: string;
@@ -12,6 +13,8 @@ export const SearchManufacturer = ({
   setManufacturer,
 }: PropsType) => {
   const [query, setQuery] = useState("");
+  const params = useSearchParams();
+  const make = params.get("make");
 
   const filteredManufacturers =
     query === ""
@@ -43,7 +46,7 @@ export const SearchManufacturer = ({
             className="search-manufacturer__input"
             displayValue={(item: string) => item}
             onChange={(event) => setQuery(event.target.value)} // Update the search query when the input changes
-            placeholder="Volkswagen..."
+            placeholder={make || "choose manufacturer..."}
           />
 
           {/* Transition for displaying the options */}

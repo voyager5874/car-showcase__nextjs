@@ -1,11 +1,15 @@
 import { Hero } from "@/components";
 import { SearchBar } from "@/components";
 import { fetchCars } from "@/utils/rapid-api";
-import { GetRequestParameters } from "@/types";
+import { SearchParamsType } from "@/types";
 import { CarCard } from "@/components";
+import { fuels } from "@/constants/fuels";
+import { yearsOfProduction } from "@/constants/years-of-production";
+import { Filter } from "@/components/Filter";
+import { ShowMoreButton } from "@/components/ShowMoreButton";
 
 type PropsType = {
-  searchParams: GetRequestParameters;
+  searchParams: SearchParamsType;
 };
 export default async function Home({ searchParams }: PropsType) {
   const allCars = await fetchCars({
@@ -28,8 +32,12 @@ export default async function Home({ searchParams }: PropsType) {
         </div>
         <div className="home__filters">
           <SearchBar />
-          <div className="home__filter-container"></div>
-          <div className="home__filter-container"></div>
+          <div className="home__filter-container">
+            <div className="home__filter-container">
+              <Filter title="fuel_type" options={fuels} />
+              <Filter title="year" options={yearsOfProduction} />
+            </div>
+          </div>
         </div>
         {!isDataEmpty ? (
           <section>
@@ -38,6 +46,10 @@ export default async function Home({ searchParams }: PropsType) {
                 <CarCard car={car} key={Object.values(car).join("")} />
               ))}
             </div>
+            <ShowMoreButton
+              allShown={(searchParams.limit || 10) > allCars.length}
+              pageNumber={(searchParams.limit || 10) / 10}
+            />
           </section>
         ) : (
           <div className="home__error-container">

@@ -1,8 +1,8 @@
-import { CarType, GetRequestParameters } from "@/types";
+import { CarType, SearchParamsType } from "@/types";
 import { stripObjectEmptyProperties } from "./stripObjectEmptyProperties";
 
 export async function fetchCars(
-  filters: GetRequestParameters
+  filters: SearchParamsType
 ): Promise<CarType[] | string> {
   const url = new URL(process.env.CARS_INFO_BASE_URL!);
 

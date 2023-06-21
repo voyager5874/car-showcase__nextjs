@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { SearchManufacturer } from "./SearchManufacturer";
-import { getNewQueryUrl } from "@/utils/getNewQueryUrl";
+import { updateSearchParams } from "@/utils/updateSearchParams";
 
 const SearchButton = ({ otherClasses }: { otherClasses: string }) => (
   <button type="submit" className={`-ml-3 z-10 ${otherClasses}`}>
@@ -24,6 +24,9 @@ export const SearchBar = () => {
 
   const router = useRouter();
 
+  const params = useSearchParams();
+  const modelQuery = params.get("model");
+
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -31,10 +34,10 @@ export const SearchBar = () => {
       return alert("Please provide some input");
     }
 
-    const searchString = getNewQueryUrl(
-      model.toLowerCase(),
-      manufacturer.toLowerCase()
-    );
+    const searchString = updateSearchParams({
+      model: model.toLowerCase(),
+      make: manufacturer.toLowerCase(),
+    });
     router.push(searchString);
   };
 
@@ -60,7 +63,7 @@ export const SearchBar = () => {
           name="model"
           value={model}
           onChange={(e) => setModel(e.target.value)}
-          placeholder="Tiguan..."
+          placeholder={modelQuery || "choose model..."}
           className="searchbar__input"
         />
         <SearchButton otherClasses="sm:hidden" />

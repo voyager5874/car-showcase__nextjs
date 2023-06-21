@@ -13,7 +13,7 @@ export type CarType = {
   year: number;
 };
 
-export type GetRequestParameters = Partial<CarType> & { limit?: number };
+export type SearchParamsType = Partial<CarType> & { limit?: number };
 
 // https://api-ninjas.com/api/cars
 
@@ -30,3 +30,8 @@ export type GetRequestParameters = Partial<CarType> & { limit?: number };
 // max_hwy_mpg (optional) - maximum highway fuel consumption (in miles per gallon).
 // min_comb_mpg (optional) - minimum combination (city and highway) fuel consumption (in miles per gallon).
 // max_comb_mpg (optional) - maximum combination (city and highway) fuel consumption (in miles per gallon).
+
+export type FilterOptionType = {
+  title: string;
+  value: string;
+};
