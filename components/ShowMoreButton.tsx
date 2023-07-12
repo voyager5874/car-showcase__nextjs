@@ -16,7 +16,7 @@ export const ShowMoreButton = ({ pageNumber, allShown }: PropsType) => {
 
     const newPathname = updateSearchParams({ limit: newLimit });
 
-    router.push(newPathname);
+    router.push(newPathname, { scroll: false });
   };
 
   return (

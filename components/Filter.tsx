@@ -1,8 +1,8 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Listbox, Transition } from "@headlessui/react";
 import { updateSearchParams } from "@/utils/updateSearchParams";
 import type { FilterOptionType } from "@/types";
@@ -14,6 +14,8 @@ type PropsType = {
 
 export function Filter({ title, options }: PropsType) {
   const router = useRouter();
+  const params = useSearchParams();
+
   const [selected, setSelected] = useState(options[0]); // State for storing the selected option
 
   // update the URL search parameters and navigate to the new URL
@@ -21,13 +23,23 @@ export function Filter({ title, options }: PropsType) {
     // const newPathName = updateSearchParams(title, e.value.toLowerCase());
     const newPathName = updateSearchParams({ [title]: e.value.toLowerCase() });
 
-    router.push(newPathName);
+    router.push(newPathName, { scroll: false });
   };
 
   const handleOptionChange = (e: FilterOptionType) => {
     setSelected(e); // Update the selected option in state
     handleUpdateParams(e); // Update the URL search parameters and navigate to the new URL
   };
+
+  useEffect(() => {
+    console.log({ title });
+    const filterQuery = params.get(title);
+    console.log({ filterQuery });
+    if (!filterQuery) return;
+    const option = options.find((o) => o.value.toLowerCase() === filterQuery);
+    console.log({ option });
+    if (option) setSelected(option);
+  }, []);
 
   return (
     <div className="w-fit">

@@ -14,8 +14,10 @@ export const SearchManufacturer = ({
 }: PropsType) => {
   const [query, setQuery] = useState("");
   const params = useSearchParams();
-  const make = params.get("make");
-
+  const makeQuery = params.get("make");
+  const make = carManufacturers.find(
+    (make) => make.toLowerCase() === makeQuery
+  );
   const filteredManufacturers =
     query === ""
       ? carManufacturers

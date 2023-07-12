@@ -1,10 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SearchManufacturer } from "./SearchManufacturer";
 import { updateSearchParams } from "@/utils/updateSearchParams";
+import { carManufacturers } from "@/constants";
 
 const SearchButton = ({ otherClasses }: { otherClasses: string }) => (
   <button type="submit" className={`-ml-3 z-10 ${otherClasses}`}>
@@ -27,6 +28,15 @@ export const SearchBar = () => {
   const params = useSearchParams();
   const modelQuery = params.get("model");
 
+  useEffect(() => {
+    const manufacturerQuery = params.get("make");
+    if (!manufacturerQuery) return;
+    const option = carManufacturers.find(
+      (make) => make.toLowerCase() === manufacturerQuery
+    );
+    if (option) setManufacturer(option);
+  }, []);
+
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -38,7 +48,7 @@ export const SearchBar = () => {
       model: model.toLowerCase(),
       make: manufacturer.toLowerCase(),
     });
-    router.push(searchString);
+    router.push(searchString, { scroll: false });
   };
 
   return (

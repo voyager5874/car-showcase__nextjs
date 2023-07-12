@@ -2,8 +2,11 @@
 
 import Image from "next/image";
 import { Button } from "@/components/Button";
+import { scrollToCatalogue } from "@/utils/scrollToCatalogue";
 
-const handleScroll = () => {};
+const handleScroll = () => {
+  scrollToCatalogue("smooth");
+};
 export const Hero = () => {
   return (
     <div className="hero">
