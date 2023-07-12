@@ -1,14 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, HTMLProps, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { SearchManufacturer } from "./SearchManufacturer";
 import { updateSearchParams } from "@/utils/updateSearchParams";
 import { carManufacturers } from "@/constants";
+import { SearchableOptions } from "@/components/SearchableOptions";
+import { CarType } from "@/types";
 
-const SearchButton = ({ otherClasses }: { otherClasses: string }) => (
-  <button type="submit" className={`-ml-3 z-10 ${otherClasses}`}>
+const SearchButton = ({ className }: HTMLProps<HTMLButtonElement>) => (
+  <button type="submit" className={`-ml-3 z-10 ${className}`}>
     <Image
       src={"/magnifying-glass.svg"}
       alt={"magnifying glass"}
@@ -19,7 +20,10 @@ const SearchButton = ({ otherClasses }: { otherClasses: string }) => (
   </button>
 );
 
-export const SearchBar = () => {
+type Props = {
+  cars: CarType[];
+};
+export const SearchBar = ({ cars }: Props) => {
   const [manufacturer, setManufacturer] = useState("");
   const [model, setModel] = useState("");
 
@@ -27,7 +31,7 @@ export const SearchBar = () => {
 
   const params = useSearchParams();
   const modelQuery = params.get("model");
-
+  const modelOptions = cars.map((car) => car.model);
   useEffect(() => {
     const manufacturerQuery = params.get("make");
     if (!manufacturerQuery) return;
@@ -54,11 +58,13 @@ export const SearchBar = () => {
   return (
     <form className="searchbar" onSubmit={handleSearch}>
       <div className="searchbar__item">
-        <SearchManufacturer
-          manufacturer={manufacturer}
-          setManufacturer={setManufacturer}
+        <SearchableOptions
+          options={carManufacturers}
+          onChange={setManufacturer}
+          selected={manufacturer}
+          inputTailwindClassNames={"rounded-l-full max-sm:rounded-full"}
         />
-        <SearchButton otherClasses="sm:hidden" />
+        <SearchButton className="sm:hidden" />
       </div>
       <div className="searchbar__item">
         <Image
@@ -68,17 +74,14 @@ export const SearchBar = () => {
           className="absolute w-[20px] h-[20px] ml-4"
           alt="car model"
         />
-        <input
-          type="text"
-          name="model"
-          value={model}
-          onChange={(e) => setModel(e.target.value)}
-          placeholder={modelQuery || "choose model..."}
-          className="searchbar__input"
+        <SearchableOptions
+          options={modelOptions}
+          onChange={setModel}
+          selected={model || modelQuery || ""}
         />
-        <SearchButton otherClasses="sm:hidden" />
+        <SearchButton className="sm:hidden" />
       </div>
-      <SearchButton otherClasses="max-sm:hidden" />
+      <SearchButton className="max-sm:hidden" />
     </form>
   );
 };

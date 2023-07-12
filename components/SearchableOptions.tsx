@@ -1,27 +1,25 @@
 import Image from "next/image";
 import { Fragment, useState } from "react";
 import { Combobox, Transition } from "@headlessui/react";
-import { carManufacturers } from "@/constants";
-import { useSearchParams } from "next/navigation";
 
 type PropsType = {
-  manufacturer: string;
-  setManufacturer: (manufacturer: string) => void;
+  selected: string;
+  options: string[];
+  onChange: (option: string) => void;
+  inputTailwindClassNames?: string;
 };
-export const SearchManufacturer = ({
-  manufacturer,
-  setManufacturer,
+export const SearchableOptions = ({
+  selected,
+  onChange,
+  options,
+  inputTailwindClassNames,
 }: PropsType) => {
   const [query, setQuery] = useState("");
-  const params = useSearchParams();
-  const makeQuery = params.get("make");
-  const make = carManufacturers.find(
-    (make) => make.toLowerCase() === makeQuery
-  );
-  const filteredManufacturers =
+
+  const filteredOptions =
     query === ""
-      ? carManufacturers
-      : carManufacturers.filter((item) =>
+      ? options
+      : options.filter((item) =>
           item
             .toLowerCase()
             .replace(/\s+/g, "")
@@ -29,8 +27,8 @@ export const SearchManufacturer = ({
         );
 
   return (
-    <div className="search-manufacturer">
-      <Combobox value={manufacturer} onChange={setManufacturer}>
+    <div className="flex-1 max-sm:w-full flex justify-start items-center">
+      <Combobox value={selected} onChange={onChange}>
         <div className="relative w-full">
           {/* Button for the combobox. Click on the icon to see the complete dropdown */}
           <Combobox.Button className="absolute top-[14px]">
@@ -45,10 +43,11 @@ export const SearchManufacturer = ({
 
           {/* Input field for searching */}
           <Combobox.Input
-            className="search-manufacturer__input"
+            className={`w-full h-[48px] pl-12 p-4 max-sm:rounded-full bg-light-white outline-none cursor-pointer text-sm ${inputTailwindClassNames}`}
             displayValue={(item: string) => item}
             onChange={(event) => setQuery(event.target.value)} // Update the search query when the input changes
-            placeholder={make || "choose manufacturer..."}
+            placeholder={selected ? undefined : "choose..."}
+            defaultValue={selected && selected}
           />
 
           {/* Transition for displaying the options */}
@@ -63,7 +62,7 @@ export const SearchManufacturer = ({
               className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
               static
             >
-              {filteredManufacturers.length === 0 && query !== "" ? (
+              {filteredOptions.length === 0 && query !== "" ? (
                 <Combobox.Option
                   value={query}
                   className="search-manufacturer__option"
@@ -71,7 +70,7 @@ export const SearchManufacturer = ({
                   Create &quot;{query}&quot;
                 </Combobox.Option>
               ) : (
-                filteredManufacturers.map((item) => (
+                filteredOptions.map((item) => (
                   <Combobox.Option
                     key={item}
                     className={({ active }) =>

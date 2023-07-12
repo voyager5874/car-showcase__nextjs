@@ -1,5 +1,5 @@
 import { CarType, SearchParamsType } from "@/types";
-import { stripObjectEmptyProperties } from "./stripObjectEmptyProperties";
+import { stripObjectEmptyProperties } from "@/utils/stripObjectEmptyProperties";
 
 export async function fetchCars(
   filters: SearchParamsType
@@ -7,7 +7,6 @@ export async function fetchCars(
   const url = new URL(process.env.CARS_INFO_BASE_URL!);
 
   const nonEmptyFilters = stripObjectEmptyProperties(filters);
-  console.log("filters", nonEmptyFilters);
   const filtersApplied =
     Object.getOwnPropertyNames(nonEmptyFilters).length !== 0;
 
@@ -33,9 +32,7 @@ export async function fetchCars(
     );
 
     // Parse the response as JSON
-    const result = await response.json();
-    console.log("fetch util", result);
-    return result;
+    return await response.json();
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "error getting car data";

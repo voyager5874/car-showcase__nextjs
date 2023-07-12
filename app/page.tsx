@@ -1,12 +1,12 @@
 import { Hero } from "@/components";
 import { SearchBar } from "@/components";
-import { fetchCars } from "@/utils/rapid-api";
-import { SearchParamsType } from "@/types";
+import { CarType, SearchParamsType } from "@/types";
 import { CarCard } from "@/components";
 import { fuels } from "@/constants/fuels";
 import { yearsOfProduction } from "@/constants/years-of-production";
 import { Filter } from "@/components/Filter";
 import { ShowMoreButton } from "@/components/ShowMoreButton";
+import { fetchCars } from "@/services/rapid-api/actions";
 
 type PropsType = {
   searchParams: SearchParamsType;
@@ -31,7 +31,7 @@ export default async function Home({ searchParams }: PropsType) {
           <p>Explore out cars you might like</p>
         </div>
         <div className="home__filters">
-          <SearchBar />
+          <SearchBar cars={allCars?.length ? (allCars as CarType[]) : []} />
           <div className="home__filter-container">
             <div className="home__filter-container">
               <Filter title="fuel_type" options={fuels} />

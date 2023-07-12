@@ -32,9 +32,7 @@ export function Filter({ title, options }: PropsType) {
   };
 
   useEffect(() => {
-    console.log({ title });
     const filterQuery = params.get(title);
-    console.log({ filterQuery });
     if (!filterQuery) return;
     const option = options.find((o) => o.value.toLowerCase() === filterQuery);
     console.log({ option });

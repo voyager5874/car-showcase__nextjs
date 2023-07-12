@@ -4,8 +4,9 @@ import { SyntheticEvent, useState } from "react";
 import Image from "next/image";
 import { CarType } from "@/types";
 import { Button } from "./Button";
-import { calculateCarRent, generateCarImageUrl } from "@/utils";
 import { CarDetails } from "./CarDetails";
+import { calculateCarRent } from "@/utils";
+import { generateCarImageUrl } from "@/services/imagin-studio-api/utils";
 
 type PropsType = {
   car: CarType;

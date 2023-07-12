@@ -2,8 +2,8 @@ import { Fragment, SyntheticEvent } from "react";
 import Image from "next/image";
 
 import { Dialog, Transition } from "@headlessui/react";
-import { generateCarImageUrl } from "@/utils";
 import { CarType } from "@/types";
+import { generateCarImageUrl } from "@/services/imagin-studio-api/utils";
 
 type PropsType = {
   isOpen: boolean;

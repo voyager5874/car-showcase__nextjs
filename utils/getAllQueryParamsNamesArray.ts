@@ -1,9 +1,4 @@
-import { ReadonlyURLSearchParams } from "next/navigation";
-
-export const getAllQueryParamsNamesArray = (
-  params?: ReadonlyURLSearchParams | URLSearchParams,
-  url?: URL
-): string[] => {
+export const getAllQueryParamsNamesArray = (): string[] => {
   const res = [] as string[];
   const searchParams = new URLSearchParams(window.location.search);
   // @ts-ignore
