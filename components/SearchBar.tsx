@@ -31,7 +31,7 @@ export const SearchBar = ({ cars }: Props) => {
 
   const params = useSearchParams();
   const modelQuery = params.get("model");
-  const modelOptions = cars.map((car) => car.model);
+  const modelOptions = cars?.length ? cars?.map((car) => car.model) : [];
   useEffect(() => {
     const manufacturerQuery = params.get("make");
     if (!manufacturerQuery) return;

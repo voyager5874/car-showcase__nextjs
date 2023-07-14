@@ -16,10 +16,12 @@ export const CarCard = ({ car }: PropsType) => {
   const { city_mpg, year, make, model, transmission, drive } = car;
 
   const [isOpen, setIsOpen] = useState(false);
+  const [imageUrl, setImageUrl] = useState(generateCarImageUrl(car));
 
   const carRent = calculateCarRent(city_mpg, year);
   const handleImageError = (e: SyntheticEvent<HTMLImageElement>) => {
     console.log("ImageError", e);
+    setImageUrl("/default-car.png");
   };
   console.log("car card image", generateCarImageUrl(car));
   return (
@@ -42,7 +44,7 @@ export const CarCard = ({ car }: PropsType) => {
 
       <div className="relative w-full h-40 my-3 object-contain">
         <Image
-          src={generateCarImageUrl(car)}
+          src={imageUrl}
           onError={handleImageError}
           alt="car model"
           fill

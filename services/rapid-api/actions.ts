@@ -3,7 +3,7 @@ import { stripObjectEmptyProperties } from "@/utils/stripObjectEmptyProperties";
 
 export async function fetchCars(
   filters: SearchParamsType
-): Promise<CarType[] | string> {
+): Promise<CarType[] | null> {
   const url = new URL(process.env.CARS_INFO_BASE_URL!);
 
   const nonEmptyFilters = stripObjectEmptyProperties(filters);
@@ -15,7 +15,7 @@ export async function fetchCars(
     url.search = params.toString();
   }
 
-  console.log("url", url);
+  console.log("fetchCars/url", url);
 
   const headers: HeadersInit = {
     "X-RapidAPI-Key": process.env.RAPIDAPI_API_KEY!,
@@ -32,11 +32,14 @@ export async function fetchCars(
     );
 
     // Parse the response as JSON
-    return await response.json();
+    const res = await response.json();
+    console.log("fetchCars/response.json()", res);
+    return res;
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "error getting car data";
-    console.log(error);
-    return message;
+    console.log("fetchCars/catch", error);
+    console.error(message);
+    return null;
   }
 }

@@ -54,7 +54,7 @@ export default async function Home({ searchParams }: PropsType) {
         ) : (
           <div className="home__error-container">
             <h2 className="text-black text-xl font-bold">Oops, no results</h2>
-            <p>{JSON.stringify(allCars)}</p>
+            {/*<p>{JSON.stringify(allCars)}</p>*/}
           </div>
         )}
       </div>
