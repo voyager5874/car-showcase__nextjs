@@ -29,7 +29,7 @@ export const CarImage = ({ angle, car }: Props) => {
   return (
     <>
       <Image
-        src={imageUrl}
+        src={imageUrl || "/default-car.png"}
         onError={handleImageError}
         alt="car model"
         fill

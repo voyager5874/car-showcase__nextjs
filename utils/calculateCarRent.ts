@@ -1,10 +1,6 @@
 export const calculateCarRent = (city_mpg: number, year: number | string) => {
   const currentYear = new Date().getFullYear();
-  if (
-    isNaN(Number(year)) ||
-    Number(year) < 2015 ||
-    Number(year) > currentYear
-  ) {
+  if (isNaN(Number(year)) || Number(year) > currentYear) {
     throw new Error("Invalid year");
   }
   const basePricePerDay = 50; // Base rental price per day in dollars

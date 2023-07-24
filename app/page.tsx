@@ -13,7 +13,11 @@ type PropsType = {
 };
 export default async function Home({ searchParams }: PropsType) {
   let yearSearchParam = searchParams.year;
-  if (!searchParams.make && !searchParams.year) {
+  // no images for cars older than 2015
+  //todo: use another source for images at least for those which older than 2015
+
+  // if (!searchParams.make && !searchParams.year) {
+  if (!searchParams.year) {
     yearSearchParam = new Date().getFullYear();
   }
   const allCars = await fetchCars({
@@ -58,7 +62,6 @@ export default async function Home({ searchParams }: PropsType) {
         ) : (
           <div className="home__error-container">
             <h2 className="text-black text-xl font-bold">Oops, no results</h2>
-            {/*<p>{JSON.stringify(allCars)}</p>*/}
           </div>
         )}
       </div>
