@@ -3,10 +3,10 @@ import { SearchBar } from "@/components";
 import { CarType, SearchParamsType } from "@/types";
 import { CarCard } from "@/components";
 import { fuels } from "@/constants/fuels";
-import { yearsOfProduction } from "@/constants/years-of-production";
 import { Filter } from "@/components/Filter";
 import { ShowMoreButton } from "@/components/ShowMoreButton";
 import { fetchCars } from "@/services/rapid-api/actions";
+import { generateYearsOfProductionOptions } from "@/utils/generateYearsOfProductionOptions";
 
 type PropsType = {
   searchParams: SearchParamsType;
@@ -43,7 +43,10 @@ export default async function Home({ searchParams }: PropsType) {
           <div className="home__filter-container">
             <div className="home__filter-container">
               <Filter title="fuel_type" options={fuels} />
-              <Filter title="year" options={yearsOfProduction} />
+              <Filter
+                title="year"
+                options={generateYearsOfProductionOptions(1990)}
+              />
             </div>
           </div>
         </div>

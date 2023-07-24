@@ -75,11 +75,13 @@ export const CarCard = ({ car }: PropsType) => {
         </div>
       </div>
 
-      <CarDetails
-        isOpen={isOpen}
-        closeModal={() => setIsOpen(false)}
-        car={car}
-      />
+      {isOpen && (
+        <CarDetails
+          isOpen={isOpen}
+          closeModal={() => setIsOpen(false)}
+          car={car}
+        />
+      )}
     </div>
   );
 };

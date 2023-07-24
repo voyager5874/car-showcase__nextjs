@@ -14,13 +14,16 @@ export const GET = async (request: NextRequest) => {
 
     const res = await fetch(requestUrl);
     const blob = await res.blob();
+    // NextResponse() will send a generic response, with the given blob as the response body.
+    // NextResponse.json() will serialize the blob to JSON and send a JSON response,
+    // with the "application/json" Content-Type header set.
     return new NextResponse(blob, {
       status: 200,
     });
   } catch (err) {
     console.log("get images endpoint error", err);
     const message = err instanceof Error ? err.message : "";
-    return new NextResponse(`cars images api error: ${message}`, {
+    return NextResponse.json(`cars images api error: ${message}`, {
       status: 500,
     });
   }
