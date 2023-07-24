@@ -1,12 +1,12 @@
 "use client";
 
-import { SyntheticEvent, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { CarType } from "@/types";
 import { Button } from "./Button";
 import { CarDetails } from "./CarDetails";
 import { calculateCarRent } from "@/utils";
-import { generateCarImageUrl } from "@/services/imagin-studio-api/utils";
+import { getCarImage } from "@/services/imagin-studio-api/utils";
 
 type PropsType = {
   car: CarType;
@@ -16,14 +16,20 @@ export const CarCard = ({ car }: PropsType) => {
   const { city_mpg, year, make, model, transmission, drive } = car;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [imageUrl, setImageUrl] = useState(generateCarImageUrl(car));
+  const [imageUrl, setImageUrl] = useState("");
 
+  useEffect(() => {
+    const fetch = async () => {
+      const image = await getCarImage(car);
+
+      setImageUrl(image);
+    };
+    fetch().then((_) => {});
+  }, []);
   const carRent = calculateCarRent(city_mpg, year);
-  const handleImageError = (e: SyntheticEvent<HTMLImageElement>) => {
-    console.log("ImageError", e);
+  const handleImageError = () => {
     setImageUrl("/default-car.png");
   };
-  console.log("car card image", generateCarImageUrl(car));
   return (
     <div className="car-card group">
       <div className="car-card__content">
@@ -44,6 +50,7 @@ export const CarCard = ({ car }: PropsType) => {
 
       <div className="relative w-full h-40 my-3 object-contain">
         <Image
+          unoptimized
           src={imageUrl}
           onError={handleImageError}
           alt="car model"

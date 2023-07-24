@@ -10,7 +10,7 @@ export type CarType = {
   make: string;
   model: string;
   transmission: string;
-  year: number;
+  year: number | string;
 };
 
 export type SearchParamsType = Partial<CarType> & { limit?: number };

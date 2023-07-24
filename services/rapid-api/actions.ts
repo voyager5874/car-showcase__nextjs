@@ -15,14 +15,11 @@ export async function fetchCars(
     url.search = params.toString();
   }
 
-  console.log("fetchCars/url", url);
-
   const headers: HeadersInit = {
     "X-RapidAPI-Key": process.env.RAPIDAPI_API_KEY!,
     "X-RapidAPI-Host": process.env.CARS_INFO_HOST!,
   };
   try {
-    // Set the required headers for the API request
     const response = await fetch(
       // `https://cars-by-api-ninjas.p.rapidapi.com/v1/cars?make=${manufacturer}&year=${year}&model=${model}&limit=${limit}&fuel_type=${fuel}`,
       url.toString(),
@@ -31,14 +28,10 @@ export async function fetchCars(
       }
     );
 
-    // Parse the response as JSON
-    const res = await response.json();
-    console.log("fetchCars/response.json()", res);
-    return res;
+    return await response.json();
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "error getting car data";
-    console.log("fetchCars/catch", error);
     console.error(message);
     return null;
   }

@@ -12,9 +12,13 @@ type PropsType = {
   searchParams: SearchParamsType;
 };
 export default async function Home({ searchParams }: PropsType) {
+  let yearSearchParam = searchParams.year;
+  if (!searchParams.make && !searchParams.year) {
+    yearSearchParam = new Date().getFullYear();
+  }
   const allCars = await fetchCars({
     make: searchParams.make,
-    year: searchParams.year || new Date().getFullYear(),
+    year: yearSearchParam,
     fuel_type: searchParams.fuel_type,
     limit: searchParams.limit || 10,
     model: searchParams.model,
