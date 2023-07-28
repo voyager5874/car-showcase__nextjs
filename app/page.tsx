@@ -26,6 +26,9 @@ export default async function Home({ searchParams }: PropsType) {
     fuel_type: searchParams.fuel_type,
     limit: searchParams.limit || 10,
     model: searchParams.model,
+    //to not show almost identical CarCards
+    drive: "fwd",
+    transmission: "a",
   });
 
   const isDataEmpty = !Array.isArray(allCars) || allCars.length < 1 || !allCars;
@@ -45,7 +48,7 @@ export default async function Home({ searchParams }: PropsType) {
               <Filter title="fuel_type" options={fuels} />
               <Filter
                 title="year"
-                options={generateYearsOfProductionOptions(1990)}
+                options={generateYearsOfProductionOptions(1980)}
               />
             </div>
           </div>

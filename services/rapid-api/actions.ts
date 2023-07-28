@@ -27,8 +27,9 @@ export async function fetchCars(
         headers: headers,
       }
     );
-
-    return await response.json();
+    const json = await response.json();
+    console.log("cars list", json);
+    return json;
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "error getting car data";

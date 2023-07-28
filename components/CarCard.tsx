@@ -56,7 +56,9 @@ export const CarCard = ({ car }: PropsType) => {
           </div>
           <div className="car-card__icon">
             <Image src="/tire.svg" width={20} height={20} alt="seat" />
-            <p className="car-card__icon-text">{drive.toUpperCase()}</p>
+            <p className="car-card__icon-text">
+              {drive && drive?.toUpperCase()}
+            </p>
           </div>
           <div className="car-card__icon">
             <Image src="/gas.svg" width={20} height={20} alt="seat" />

@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getCarImage } from "@/services/imagin-studio-api/actions";
 import Image from "next/image";
 import { CarType } from "@/types";
-import { getOldCarImage } from "@/services/google-search/actions";
+import { getImagesFromWikiCommons } from "@/services/wikimedia-api/actions";
 
 type Props = {
   angle?: number;
@@ -16,15 +15,11 @@ export const CarImage = ({ angle, car }: Props) => {
 
   useEffect(() => {
     const fetch = async () => {
-      const image =
-        Number(car.year) < 2015
-          ? await getOldCarImage(car, angle)
-          : await getCarImage(car, angle);
-
+      const image = await getImagesFromWikiCommons(car, angle);
       setImageUrl(image);
     };
     fetch().then((_) => {});
-  }, []);
+  }, [car, angle]);
 
   const handleImageError = () => {
     setImageUrl("/default-car.png");
