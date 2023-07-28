@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { CarType } from "@/types";
-import { findImages } from "@/services/google-scraper/actions";
+import { findImages } from "@/services/picscout/actions";
 
 type Props = {
   angle?: number;
