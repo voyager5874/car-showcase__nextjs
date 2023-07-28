@@ -4,7 +4,7 @@ import {
   GoogleErrorResponse,
   GoogleResponse,
   isGoogleErrorResponse,
-} from "@/services/google-search/types";
+} from "@/services/google-cse/types";
 
 export const GET = async (request: NextRequest) => {
   const clientRequestUrl = new URL(request.url);

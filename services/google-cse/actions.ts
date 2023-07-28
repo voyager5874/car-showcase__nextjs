@@ -1,6 +1,6 @@
 import { CarType } from "@/types";
 import { getErrorMessage } from "@/utils/getErrorMessage";
-import { GoggleResponseItem } from "@/services/google-search/types";
+import { GoggleResponseItem } from "@/services/google-cse/types";
 import { getAnotherItemFromArray } from "@/utils/getAnotherItemFromArray";
 
 export const findImageWithGoogle = async (car: CarType, angle?: number) => {

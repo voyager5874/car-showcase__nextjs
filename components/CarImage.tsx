@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { CarType } from "@/types";
-import { getImagesFromWikiCommons } from "@/services/wikimedia-api/actions";
+import { findImages } from "@/services/google-scraper/actions";
 
 type Props = {
   angle?: number;
@@ -15,7 +15,7 @@ export const CarImage = ({ angle, car }: Props) => {
 
   useEffect(() => {
     const fetch = async () => {
-      const image = await getImagesFromWikiCommons(car, angle);
+      const image = await findImages(car, angle);
       setImageUrl(image);
     };
     fetch().then((_) => {});
