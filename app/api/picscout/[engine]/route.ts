@@ -26,8 +26,24 @@ export const GET = async (request: NextRequest, { params }: Param) => {
         status: 400,
       }
     );
+  const searchSettings = new URLSearchParams();
+  if (engine === "google") {
+    searchSettings.append("imgType", "photo");
+    searchSettings.append("imgColorType", "color");
+    searchSettings.append("exactTerms", query);
+  }
+  if (engine === "bing") {
+    // doesn't seem to make any difference
+    searchSettings.append("count", "150");
+    searchSettings.append("imageType", "Photo");
+    searchSettings.append("minHeight", "300");
+    searchSettings.append("color", "Monochrome");
+  }
   try {
-    const res = await PicScout.search(query, { engine: engine });
+    const res = await PicScout.search(query, {
+      engine: engine,
+      additionalQueryParams: searchSettings,
+    });
     console.log("picscout scrape", res);
     return NextResponse.json(
       { items: res },

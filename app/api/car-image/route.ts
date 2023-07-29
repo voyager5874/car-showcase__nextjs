@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (request: NextRequest) => {
   if (!process.env.IMAGINSTUDIO_API_KEY || !process.env.CARS_IMAGES_API_URL)
-    return new NextResponse("error accessing cars images", { status: 500 });
+    return new NextResponse("error accessing cars images", { status: 400 });
   const query = new URL(request.url).searchParams;
   const url = new URL(process.env.CARS_IMAGES_API_URL);
   url.search = query.toString();

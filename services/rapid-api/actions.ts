@@ -1,9 +1,10 @@
 import { CarType, SearchParamsType } from "@/types";
 import { stripObjectEmptyProperties } from "@/utils/stripObjectEmptyProperties";
+import { randomUUID } from "crypto";
 
 export async function fetchCars(
   filters: SearchParamsType
-): Promise<CarType[] | null> {
+): Promise<(CarType & { id: string })[] | null> {
   const url = new URL(process.env.CARS_INFO_BASE_URL!);
 
   const nonEmptyFilters = stripObjectEmptyProperties(filters);
@@ -27,9 +28,9 @@ export async function fetchCars(
         headers: headers,
       }
     );
-    const json = await response.json();
+    const json: CarType[] = await response.json();
     console.log("cars list", json);
-    return json;
+    return json.map((item) => ({ ...item, id: randomUUID() }));
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "error getting car data";

@@ -1,5 +1,4 @@
 import { CarType } from "@/types";
-import { getAnotherItemFromArray } from "@/utils/getAnotherItemFromArray";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 
 type PicScoutResponseItem = {
@@ -7,9 +6,12 @@ type PicScoutResponseItem = {
   width: number;
   height: number;
 };
-
-const engine: "google" | "bing" | "duckduckgo" = "bing";
-export const findImages = async (car: CarType, angle?: number) => {
+type SearchEnginName = "google" | "bing" | "duckduckgo";
+export const findImages = async (
+  car: CarType,
+  angle?: number,
+  engine: SearchEnginName = "bing"
+) => {
   const { make, model, year } = car;
   const url = new URL(
     `${process.env.NEXT_PUBLIC_APP_URL}/api/picscout/${engine}`
@@ -23,7 +25,7 @@ export const findImages = async (car: CarType, angle?: number) => {
   try {
     const res = await fetch(requestUrl);
     const json = await res.json();
-    console.log("google scrape json", json);
+    console.log("picScout scrape json", json);
     let images = [] as string[];
     if (json?.items?.length) {
       images = await filterResults(json.items, car);
@@ -32,24 +34,40 @@ export const findImages = async (car: CarType, angle?: number) => {
     console.log({ images });
 
     // if (!images.length) return "/default-car.png";
-    if (!images.length) return "/car-image-err.png";
-    return angle ? getAnotherItemFromArray(images, angle) : images[0];
+    // if (!images.length) return "/car-image-err.png";
+    // return angle
+    //   ? getAnotherItemFromArray(images, angle)
+    //   : // : images[getRandomInt(images.length - 1)];
+    //     // images[0];
+    //     getAnotherItemFromArray(
+    //       images,
+    //       Number(car.city_mpg) + Number(car.highway_mpg)
+    //     );
+
+    if (!images.length) images.push("/default-car.png");
+    return images;
   } catch (err) {
     console.log(getErrorMessage(err));
-    return "/car-image-err.png";
+    return ["/car-image-err.png"];
   }
 };
 
 async function filterResults(data: PicScoutResponseItem[], car: CarType) {
   const { make, model, year } = car;
-
-  const modelWords = removeBetweenBrackets(model).split(" ");
-
+  const modelWithoutShorWords = model.replace(" 2wd", "");
+  const modelWords = removeBetweenBrackets(modelWithoutShorWords).split(" ");
+  // todo: having modelName and modelName + "sport" atc. filter for the first car should use !model.includes("sport")
+  // somehow "outlander sport" yields more results than just "outlander"
   const relevant = data.filter(
     (item) =>
       item.url.toLowerCase().includes(make) &&
       item.url.includes(`${year}`) &&
       !item.url.toLowerCase().includes("pnzdrive") &&
+      !item.url.toLowerCase().includes("priceinsouthafrica.com") &&
+      !item.url.toLowerCase().includes("mcarsstatic.cachefly.net") &&
+      !item.url.toLowerCase().includes("4.bp.blogspot.com") &&
+      !item.url.toLowerCase().includes("netcarshow.com") &&
+      !item.url.toLowerCase().includes("diagram") &&
       modelWords.every((word) => item.url.toLowerCase().includes(word))
   );
 
@@ -61,7 +79,8 @@ async function filterResults(data: PicScoutResponseItem[], car: CarType) {
       validUrls.push(image.url);
     }
   }
-
+  console.log("picScout model filter", modelWords);
+  console.log("picScout Filter output", validUrls);
   return validUrls;
 }
 

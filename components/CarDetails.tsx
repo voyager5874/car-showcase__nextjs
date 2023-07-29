@@ -9,8 +9,9 @@ type PropsType = {
   isOpen: boolean;
   closeModal: () => void;
   car: CarType;
+  images: string[];
 };
-export const CarDetails = ({ isOpen, closeModal, car }: PropsType) => {
+export const CarDetails = ({ isOpen, closeModal, car, images }: PropsType) => {
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
@@ -55,17 +56,17 @@ export const CarDetails = ({ isOpen, closeModal, car }: PropsType) => {
 
                   <div className="flex-1 flex flex-col gap-3">
                     <div className="relative w-full h-40 bg-pattern bg-cover bg-center rounded-lg">
-                      <CarImage car={car} />
+                      <CarImage car={car} images={images} />
                     </div>
                     <div className="flex gap-3">
                       <div className="flex-1 relative w-full h-24 bg-primary-blue-100 rounded-lg">
-                        <CarImage car={car} angle={29} />
+                        <CarImage car={car} angle={29} images={images} />
                       </div>
                       <div className="flex-1 relative w-full h-24 bg-primary-blue-100 rounded-lg">
-                        <CarImage car={car} angle={33} />
+                        <CarImage car={car} angle={33} images={images} />
                       </div>
                       <div className="flex-1 relative w-full h-24 bg-primary-blue-100 rounded-lg">
-                        <CarImage car={car} angle={13} />
+                        <CarImage car={car} angle={13} images={images} />
                       </div>
                     </div>
                   </div>

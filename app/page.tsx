@@ -42,13 +42,17 @@ export default async function Home({ searchParams }: PropsType) {
           <p>Explore out cars you might like</p>
         </div>
         <div className="home__filters">
-          <SearchBar cars={allCars?.length ? (allCars as CarType[]) : []} />
+          <SearchBar
+            cars={
+              allCars?.length ? (allCars as (CarType & { id: string })[]) : []
+            }
+          />
           <div className="home__filter-container">
             <div className="home__filter-container">
               <Filter title="fuel_type" options={fuels} />
               <Filter
                 title="year"
-                options={generateYearsOfProductionOptions(1980)}
+                options={generateYearsOfProductionOptions(1985)}
               />
             </div>
           </div>
@@ -57,7 +61,10 @@ export default async function Home({ searchParams }: PropsType) {
           <section>
             <div className="home__cars-wrapper">
               {allCars?.map((car) => (
-                <CarCard car={car} key={Object.values(car).join("")} />
+                <CarCard
+                  car={car}
+                  key={car?.id || Object.values(car).join("-")}
+                />
               ))}
             </div>
             <ShowMoreButton

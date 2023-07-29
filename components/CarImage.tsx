@@ -3,26 +3,56 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { CarType } from "@/types";
-import { findImages } from "@/services/picscout/actions";
+import { getAnotherItemFromArray } from "@/utils/getAnotherItemFromArray";
 
 type Props = {
   angle?: number;
   car: CarType;
+  images: string[];
 };
 
-export const CarImage = ({ angle, car }: Props) => {
-  const [imageUrl, setImageUrl] = useState("");
+export const CarImage = ({ angle, car, images }: Props) => {
+  const [imageUrl, setImageUrl] = useState("/default-car.png");
 
   useEffect(() => {
-    const fetch = async () => {
-      const image = await findImages(car, angle);
+    if (!images.length) return;
+    if (images.length === 1 && images[0] !== "/default-car.png") {
+      setImageUrl(images[0]);
+      return;
+    }
+    let image = "";
+    if (images.length >= 4 && Number(car.year) >= 2022) {
+      if (!angle) {
+        image = images[0];
+      }
+      if (angle === 29) {
+        image = images[1];
+      }
+      if (angle === 33) {
+        image = images[2];
+      }
+      if (angle === 13) {
+        image = images[3];
+      }
       setImageUrl(image);
-    };
-    fetch().then((_) => {});
-  }, [car, angle]);
+      return;
+    }
+    // this is just to make similar cars to have different images
+    image = angle
+      ? getAnotherItemFromArray(
+          images,
+          angle,
+          Number(car.city_mpg) + Number(car.highway_mpg)
+        )
+      : getAnotherItemFromArray(
+          images,
+          Number(car.city_mpg) + Number(car.highway_mpg)
+        );
+    setImageUrl(image);
+  }, [images.length, angle, car.city_mpg, car.highway_mpg, car.year]);
 
   const handleImageError = () => {
-    setImageUrl("/default-car.png");
+    setImageUrl("/car-image-err.png");
   };
 
   return (

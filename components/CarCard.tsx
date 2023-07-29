@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { CarType } from "@/types";
 import { Button } from "./Button";
 import { CarDetails } from "./CarDetails";
 import { calculateCarRent } from "@/utils";
 import { CarImage } from "@/components/CarImage";
+import { findImages } from "@/services/picscout/actions";
+import { getCarImagesList } from "@/services/imagin-studio-api/actions";
 
 type PropsType = {
   car: CarType;
@@ -16,9 +18,20 @@ export const CarCard = ({ car }: PropsType) => {
   const { city_mpg, year, make, model, transmission, drive } = car;
 
   const [isOpen, setIsOpen] = useState(false);
+  const [images, setImages] = useState<string[]>(["/default-car.png"]);
 
   const carRent = calculateCarRent(city_mpg, year);
 
+  useEffect(() => {
+    const fetch = async () => {
+      const links =
+        Number(car.year) < 2022
+          ? await findImages(car)
+          : await getCarImagesList(car);
+      setImages(links);
+    };
+    fetch().then((_) => {});
+  }, [car]);
   return (
     <div className="car-card group">
       <div className="car-card__content">
@@ -38,7 +51,7 @@ export const CarCard = ({ car }: PropsType) => {
       </p>
 
       <div className="relative w-full h-40 my-3 object-contain">
-        <CarImage car={car} />
+        <CarImage car={car} images={images} />
       </div>
 
       <div className="relative flex w-full mt-2">
@@ -82,6 +95,7 @@ export const CarCard = ({ car }: PropsType) => {
           isOpen={isOpen}
           closeModal={() => setIsOpen(false)}
           car={car}
+          images={images}
         />
       )}
     </div>
