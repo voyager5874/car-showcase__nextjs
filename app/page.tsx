@@ -17,8 +17,9 @@ export default async function Home({ searchParams }: PropsType) {
   //todo: use another source for images at least for those which older than 2015
 
   // if (!searchParams.make && !searchParams.year) {
-  if (!searchParams.year) {
-    yearSearchParam = new Date().getFullYear();
+  if (!yearSearchParam && !searchParams.make && !searchParams.model) {
+    // yearSearchParam = new Date().getFullYear();
+    yearSearchParam = 2023;
   }
   const allCars = await fetchCars({
     make: searchParams.make,
@@ -37,18 +38,18 @@ export default async function Home({ searchParams }: PropsType) {
     <main className="overflow-hidden">
       <Hero />
       <div className="mt-12 padding-x padding-y max-width" id="discover">
-        <div className="home__text-container">
+        <div className="flex flex-col items-start justify-start gap-y-2.5 text-black-100">
           <h1 className="text-4xl font-extrabold">Car Catalogue</h1>
           <p>Explore out cars you might like</p>
         </div>
-        <div className="home__filters">
+        <div className="mt-12 w-full flex-between items-center flex-wrap gap-5">
           <SearchBar
             cars={
               allCars?.length ? (allCars as (CarType & { id: string })[]) : []
             }
           />
-          <div className="home__filter-container">
-            <div className="home__filter-container">
+          <div className="flex justify-start flex-wrap items-center gap-2">
+            <div className="flex justify-start flex-wrap items-center gap-2">
               <Filter title="fuel_type" options={fuels} />
               <Filter
                 title="year"
@@ -59,7 +60,7 @@ export default async function Home({ searchParams }: PropsType) {
         </div>
         {!isDataEmpty ? (
           <section>
-            <div className="home__cars-wrapper">
+            <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 w-full gap-8 pt-14">
               {allCars?.map((car) => (
                 <CarCard
                   car={car}
@@ -73,7 +74,7 @@ export default async function Home({ searchParams }: PropsType) {
             />
           </section>
         ) : (
-          <div className="home__error-container">
+          <div className="mt-16 flex justify-center items-center flex-col gap-2 min-h-[200px]">
             <h2 className="text-black text-xl font-bold">Oops, no results</h2>
           </div>
         )}

@@ -33,11 +33,12 @@ export const CarCard = ({ car }: PropsType) => {
     fetch().then((_) => {});
   }, [car]);
   return (
-    <div className="car-card group">
-      <div className="car-card__content">
-        <h2 className="car-card__content-title">
+    <div className="flex flex-col p-6 justify-center items-start text-black-100 bg-primary-blue-100 hover:bg-white hover:shadow-md rounded-3xl group">
+      <div className="w-full flex justify-between items-start gap-2">
+        <h2 className="text-[22px] leading-[26px] font-bold capitalize">
           {make} {model}
         </h2>
+        <h5 className="text-xs">{year}</h5>
       </div>
 
       <p className="flex mt-6 text-[32px] leading-[38px] font-extrabold">
@@ -79,7 +80,7 @@ export const CarCard = ({ car }: PropsType) => {
           </div>
         </div>
 
-        <div className="car-card__btn-container">
+        <div className="hidden group-hover:flex absolute bottom-0 w-full z-10">
           <Button
             title="View More"
             containerStyles="w-full py-[16px] rounded-full bg-primary-blue"

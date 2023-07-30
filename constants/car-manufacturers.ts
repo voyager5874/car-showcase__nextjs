@@ -32,7 +32,7 @@ export const carManufacturers = [
   "MINI",
   "Mitsubishi",
   "Nissan",
-  "Porsche",
+  // "Porsche",
   "Ram",
   "Rolls-Royce",
   "Subaru",
