@@ -1,6 +1,6 @@
 import { Hero } from "@/components";
 import { SearchBar } from "@/components";
-import { CarType, SearchParamsType } from "@/types";
+import { SearchParamsType } from "@/types";
 import { CarCard } from "@/components";
 import { fuels } from "@/constants/fuels";
 import { Filter } from "@/components/Filter";
@@ -43,11 +43,7 @@ export default async function Home({ searchParams }: PropsType) {
           <p>Explore out cars you might like</p>
         </div>
         <div className="mt-12 w-full flex-between items-center flex-wrap gap-5">
-          <SearchBar
-            cars={
-              allCars?.length ? (allCars as (CarType & { id: string })[]) : []
-            }
-          />
+          <SearchBar />
           <div className="flex justify-start flex-wrap items-center gap-2">
             <div className="flex justify-start flex-wrap items-center gap-2">
               <Filter title="fuel_type" options={fuels} />

@@ -6,7 +6,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { updateSearchParams } from "@/utils/updateSearchParams";
 import { carManufacturers } from "@/constants";
 import { SearchableOptions } from "@/components/SearchableOptions";
-import { CarType } from "@/types";
 import { GetModelsForMakeResponse } from "@/services/nhtsa/types";
 
 const SearchButton = ({ className }: HTMLProps<HTMLButtonElement>) => (
