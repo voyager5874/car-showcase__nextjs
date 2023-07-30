@@ -5,6 +5,7 @@ import {
   WikiPageMediaResponseItem,
 } from "@/services/wikimedia-api/types";
 import { getAnotherItemFromArray } from "@/utils/getAnotherItemFromArray";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 
 export const findWikiPages = async (
   car: CarType
@@ -78,14 +79,15 @@ export const findWikimediaImagesKeys = async (car: CarType) => {
   url.searchParams.append("car", `${make} ${model} ${year}`);
   const requestUrl = url.toString();
   try {
-    const res = await fetch(requestUrl);
+    const res: WikiSearchResponse = await fetch(requestUrl).then((res) =>
+      res.json()
+    );
 
-    const json: WikiSearchResponse = await res.json();
-    console.log("wiki commons search json", json);
-    if (!json?.pages?.length) {
+    console.log("wiki commons search json", res);
+    if (!res?.pages?.length) {
       throw new Error("nothing found");
     }
-    const files = json.pages.filter((item) =>
+    const files = res.pages.filter((item) =>
       item.title.toLowerCase().includes("file")
     );
     console.log("wiki files", files);
@@ -106,18 +108,17 @@ const getWikimediaFileLink = async (fileKey: string) => {
   );
   const requestUrl = url.toString();
   try {
-    const res = await fetch(requestUrl);
-    const json = await res.json();
-    return json?.link;
+    const res = await fetch(requestUrl).then((res) => res.json());
+    return res?.link;
   } catch (err) {
     return "/car-image-err.png";
   }
 };
 
 export const getImagesFromWikiCommons = async (
-  car: CarType,
-  angle?: number
-): Promise<string> => {
+  car: CarType
+  // angle?: number
+): Promise<string[]> => {
   try {
     const filesKeys = await findWikimediaImagesKeys(car);
     console.log("filesKeys", filesKeys);
@@ -132,10 +133,11 @@ export const getImagesFromWikiCommons = async (
       }
     }
     console.log("wiki commons request links", links);
-    if (!links.length) return "/car-image-err.png";
-    return angle ? getAnotherItemFromArray(links, angle) : links[0];
+    if (!links.length) return ["/car-image-err.png"];
+    return links;
   } catch (err) {
-    return "/car-image-err.png";
+    console.log(getErrorMessage(err));
+    return ["/car-image-err.png"];
   }
 };
 
@@ -173,7 +175,7 @@ function filterWikiSearchResults(data: WikiSearchResponseItem[], car: CarType) {
   const { make, model, year } = car;
   const modelWords = model.split(" ");
 
-  return data.filter(
+  const items = data.filter(
     (item) =>
       (item.title.toLowerCase().includes(".jpg") ||
         item.title.toLowerCase().includes(".png")) &&
@@ -182,6 +184,10 @@ function filterWikiSearchResults(data: WikiSearchResponseItem[], car: CarType) {
       //mazda has too simple models name: 3, 6 etc.
       !item.title.toLowerCase().includes("zoom-zoom") &&
       !item.title.toLowerCase().includes("office") &&
+      !item.title.toLowerCase().includes("engine") &&
+      !item.title.toLowerCase().includes("temporary") &&
       modelWords.every((word) => item.title.toLowerCase().includes(word))
   );
+  console.log("filterWikiSearchResults output", items);
+  return items;
 }

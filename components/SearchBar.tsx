@@ -76,6 +76,7 @@ export const SearchBar = () => {
     const searchString = updateSearchParams({
       model: model ? model.toLowerCase() : "",
       make: manufacturer.toLowerCase(),
+      limit: 10,
     });
     router.push(searchString, { scroll: false });
   };

@@ -9,6 +9,7 @@ import { calculateCarRent } from "@/utils";
 import { CarImage } from "@/components/CarImage";
 import { findImages } from "@/services/picscout/actions";
 import { getCarImagesList } from "@/services/imagin-studio-api/actions";
+import { getImagesFromWikiCommons } from "@/services/wikimedia-api/actions";
 
 type PropsType = {
   car: CarType;
@@ -24,14 +25,22 @@ export const CarCard = ({ car }: PropsType) => {
 
   useEffect(() => {
     const fetch = async () => {
+      let finalList: string[];
       const links =
         Number(car.year) < 2022
-          ? await findImages(car)
+          ? await getImagesFromWikiCommons(car)
           : await getCarImagesList(car);
-      setImages(links);
+      finalList = [...links];
+      if (links.length < 4) {
+        const scraped = await findImages(car);
+        if (scraped.length && scraped[0] !== "/car-image-err.png") {
+          finalList = [...finalList, ...scraped];
+        }
+      }
+      setImages(finalList);
     };
     fetch().then((_) => {});
-  }, [car]);
+  }, [car.model, car.year, car.make]);
   return (
     <div className="flex flex-col p-6 justify-center items-start text-black-100 bg-primary-blue-100 hover:bg-white hover:shadow-md rounded-3xl group">
       <div className="w-full flex justify-between items-start gap-2">

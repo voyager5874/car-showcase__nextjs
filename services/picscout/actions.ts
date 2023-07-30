@@ -31,19 +31,6 @@ export const findImages = async (
       images = await filterResults(json.items, car);
     }
 
-    console.log({ images });
-
-    // if (!images.length) return "/default-car.png";
-    // if (!images.length) return "/car-image-err.png";
-    // return angle
-    //   ? getAnotherItemFromArray(images, angle)
-    //   : // : images[getRandomInt(images.length - 1)];
-    //     // images[0];
-    //     getAnotherItemFromArray(
-    //       images,
-    //       Number(car.city_mpg) + Number(car.highway_mpg)
-    //     );
-
     if (!images.length) images.push("/default-car.png");
     return images;
   } catch (err) {
@@ -68,6 +55,7 @@ async function filterResults(data: PicScoutResponseItem[], car: CarType) {
       !item.url.toLowerCase().includes("4.bp.blogspot.com") &&
       !item.url.toLowerCase().includes("netcarshow.com") &&
       !item.url.toLowerCase().includes("diagram") &&
+      !item.url.toLowerCase().includes("temporary") &&
       modelWords.every((word) => item.url.toLowerCase().includes(word))
   );
 
