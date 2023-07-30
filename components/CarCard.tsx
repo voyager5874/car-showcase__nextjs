@@ -28,7 +28,7 @@ export const CarCard = ({ car }: PropsType) => {
     const fetch = async () => {
       let finalList: string[];
       const links =
-        Number(car.year) < 2022
+        Number(car.year) < 2016
           ? await getImagesFromWikiCommons(car)
           : await getCarImagesList(car);
       finalList = [...links];

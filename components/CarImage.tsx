@@ -22,7 +22,7 @@ export const CarImage = ({ angle, car, images, tailwindClasses }: Props) => {
       return;
     }
     let image = "";
-    if (images.length >= 4 && Number(car.year) >= 2022) {
+    if (images.length >= 4 && Number(car.year) >= 2016) {
       if (!angle) {
         image = images[0];
       }

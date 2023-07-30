@@ -23,9 +23,9 @@ export const getCarImagesList = async (car: CarType) => {
   try {
     return await Promise.all([
       getCarImage(car),
-      getCarImage(car, 29),
-      getCarImage(car, 33),
-      getCarImage(car, 13),
+      getCarImage(car, 29), //front
+      getCarImage(car, 33), //top
+      getCarImage(car, 13), //rear
     ]);
   } catch (err) {
     console.log(getErrorMessage(err));
