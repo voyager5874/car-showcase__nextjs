@@ -10,6 +10,7 @@ import { CarImage } from "@/components/CarImage";
 import { findImages } from "@/services/picscout/actions";
 import { getCarImagesList } from "@/services/imagin-studio-api/actions";
 import { getImagesFromWikiCommons } from "@/services/wikimedia-api/actions";
+import { findImageWithGoogle } from "@/services/google-cse/actions";
 
 type PropsType = {
   car: CarType;
@@ -31,7 +32,13 @@ export const CarCard = ({ car }: PropsType) => {
           ? await getImagesFromWikiCommons(car)
           : await getCarImagesList(car);
       finalList = [...links];
-      if (links.length < 4) {
+      if (finalList.length < 4) {
+        const gseResult = await findImageWithGoogle(car);
+        if (gseResult.length && gseResult[0] !== "/car-image-err.png") {
+          finalList = [...finalList, ...gseResult];
+        }
+      }
+      if (finalList.length < 4) {
         const scraped = await findImages(car);
         if (scraped.length && scraped[0] !== "/car-image-err.png") {
           finalList = [...finalList, ...scraped];

@@ -55,41 +55,61 @@ export const CarDetails = ({ isOpen, closeModal, car, images }: PropsType) => {
                   </button>
 
                   <div className="flex-1 flex flex-col gap-3">
-                    <div className="relative w-full h-40 bg-primary-blue-100 bg-cover bg-center rounded-lg">
-                      <CarImage car={car} images={images} />
+                    <div className="relative w-full h-56 bg-primary-blue-100 rounded-lg overflow-hidden pt-5">
+                      <CarImage
+                        car={car}
+                        images={images}
+                        tailwindClasses="object-cover object-top"
+                      />
                     </div>
                     <div className="flex gap-3">
                       <div className="flex-1 relative w-full h-24 bg-primary-blue-100 rounded-lg">
-                        <CarImage car={car} angle={29} images={images} />
+                        <CarImage
+                          car={car}
+                          angle={29}
+                          images={images}
+                          tailwindClasses="object-cover rounded-lg"
+                        />
                       </div>
                       <div className="flex-1 relative w-full h-24 bg-primary-blue-100 rounded-lg">
-                        <CarImage car={car} angle={33} images={images} />
+                        <CarImage
+                          car={car}
+                          angle={33}
+                          images={images}
+                          tailwindClasses="object-cover rounded-lg"
+                        />
                       </div>
                       <div className="flex-1 relative w-full h-24 bg-primary-blue-100 rounded-lg">
-                        <CarImage car={car} angle={13} images={images} />
+                        <CarImage
+                          car={car}
+                          angle={13}
+                          images={images}
+                          tailwindClasses="object-cover rounded-lg"
+                        />
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex-1 flex flex-col gap-2">
+                  <div className="flex-1 flex flex-col gap-1">
                     <h2 className="font-semibold text-xl capitalize">
                       {car.make} {car.model}
                     </h2>
 
-                    <div className="mt-3 flex flex-wrap gap-4">
-                      {Object.entries(car).map(([key, value]) => (
-                        <div
-                          className="flex justify-between gap-5 w-full text-right"
-                          key={key}
-                        >
-                          <h4 className="text-grey capitalize">
-                            {key.split("_").join(" ")}
-                          </h4>
-                          <p className="text-black-100 font-semibold">
-                            {value}
-                          </p>
-                        </div>
-                      ))}
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {delete car?.id &&
+                        Object.entries(car).map(([key, value]) => (
+                          <div
+                            className="flex justify-between gap-5 w-full text-right"
+                            key={key}
+                          >
+                            <h4 className="text-grey capitalize">
+                              {key.split("_").join(" ")}
+                            </h4>
+                            <p className="text-black-100 font-semibold">
+                              {value}
+                            </p>
+                          </div>
+                        ))}
                     </div>
                   </div>
                 </Dialog.Panel>

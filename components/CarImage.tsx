@@ -9,9 +9,10 @@ type Props = {
   angle?: number;
   car: CarType;
   images: string[];
+  tailwindClasses?: string;
 };
 
-export const CarImage = ({ angle, car, images }: Props) => {
+export const CarImage = ({ angle, car, images, tailwindClasses }: Props) => {
   const [imageUrl, setImageUrl] = useState("/default-car.png");
 
   useEffect(() => {
@@ -62,8 +63,8 @@ export const CarImage = ({ angle, car, images }: Props) => {
         onError={handleImageError}
         alt="car model"
         fill
-        priority
-        className="object-contain"
+        sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+        className={`object-contain ${tailwindClasses || ""}`}
       />
     </>
   );

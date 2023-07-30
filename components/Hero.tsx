@@ -28,7 +28,13 @@ export const Hero = () => {
       </div>
       <div className="hero__image-container">
         <div className="hero__image">
-          <Image src="/hero.png" alt="hero" fill className="object-contain" />
+          <Image
+            src="/hero.png"
+            alt="hero"
+            fill
+            className="object-contain"
+            sizes="(max-width: 1280px) 100vw, 50vw"
+          />
         </div>
 
         <div className="hero__image-overlay" />
