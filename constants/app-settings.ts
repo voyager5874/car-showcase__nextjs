@@ -1,0 +1,1 @@
+export const IMAGIN_STUDIO_API_YEAR = 2020;

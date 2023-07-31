@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { CarType } from "@/types";
 import { getAnotherItemFromArray } from "@/utils/getAnotherItemFromArray";
+import { IMAGIN_STUDIO_API_YEAR } from "@/constants/app-settings";
 
 type Props = {
   angle?: number;
@@ -22,7 +23,7 @@ export const CarImage = ({ angle, car, images, tailwindClasses }: Props) => {
       return;
     }
     let image = "";
-    if (images.length >= 4 && Number(car.year) >= 2016) {
+    if (images.length >= 4 && Number(car.year) >= IMAGIN_STUDIO_API_YEAR) {
       if (!angle) {
         image = images[0];
       }

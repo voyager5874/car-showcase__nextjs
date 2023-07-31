@@ -9,8 +9,12 @@ import { calculateCarRent } from "@/utils";
 import { CarImage } from "@/components/CarImage";
 import { findImages } from "@/services/picscout/actions";
 import { getCarImagesList } from "@/services/imagin-studio-api/actions";
-import { getImagesFromWikiCommons } from "@/services/wikimedia-api/actions";
+import {
+  getImagesFromWikiCommons,
+  getImagesFromWikiPage,
+} from "@/services/wikimedia-api/actions";
 import { findImageWithGoogle } from "@/services/google-cse/actions";
+import { IMAGIN_STUDIO_API_YEAR } from "@/constants/app-settings";
 
 type PropsType = {
   car: CarType;
@@ -28,10 +32,16 @@ export const CarCard = ({ car }: PropsType) => {
     const fetch = async () => {
       let finalList: string[];
       const links =
-        Number(car.year) < 2016
+        Number(car.year) < IMAGIN_STUDIO_API_YEAR
           ? await getImagesFromWikiCommons(car)
           : await getCarImagesList(car);
       finalList = [...links];
+      if (finalList.length < 4) {
+        const mediaList = await getImagesFromWikiPage(car);
+        if (mediaList.length && mediaList[0] !== "/car-image-err.png") {
+          finalList = [...finalList, ...mediaList];
+        }
+      }
       if (finalList.length < 4) {
         const gseResult = await findImageWithGoogle(car);
         if (gseResult.length && gseResult[0] !== "/car-image-err.png") {

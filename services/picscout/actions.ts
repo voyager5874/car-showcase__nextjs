@@ -23,15 +23,11 @@ export const findImages = async (
   const requestUrl = url.toString();
 
   try {
-    const res = await fetch(requestUrl);
-    const json = await res.json();
-    console.log("picScout scrape json", json);
-    let images = [] as string[];
-    if (json?.items?.length) {
-      images = await filterResults(json.items, car);
-    }
-
-    if (!images.length) images.push("/default-car.png");
+    const res = await fetch(requestUrl).then((res) => res.json());
+    console.log("picScout scrape json", res);
+    if (!res?.items?.length) return [];
+    const images = await filterResults(res.items, car);
+    if (!images.length) return [];
     return images;
   } catch (err) {
     console.log(getErrorMessage(err));
@@ -47,6 +43,21 @@ async function filterResults(data: PicScoutResponseItem[], car: CarType) {
   // somehow "outlander sport" yields more results than just "outlander"
   const relevant = data.filter(
     (item) =>
+      (!modelWithoutShorWords.includes("wagon")
+        ? !item.url.toLowerCase().includes("wagon")
+        : true) &&
+      (!modelWithoutShorWords.includes("convertible")
+        ? !item.url.toLowerCase().includes("convertible")
+        : true) &&
+      (!modelWithoutShorWords.includes("roadster")
+        ? !item.url.toLowerCase().includes("roadster")
+        : true) &&
+      (!modelWithoutShorWords.includes("cabriolet")
+        ? !item.url.toLowerCase().includes("cabriolet")
+        : true) &&
+      (!modelWithoutShorWords.includes("coupe")
+        ? !item.url.toLowerCase().includes("coupe")
+        : true) &&
       item.url.toLowerCase().includes(make) &&
       item.url.includes(`${year}`) &&
       !item.url.toLowerCase().includes("pnzdrive") &&

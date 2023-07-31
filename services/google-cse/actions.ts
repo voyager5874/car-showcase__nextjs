@@ -20,7 +20,7 @@ export const findImageWithGoogle = async (car: CarType) => {
       : [];
 
     // if (!images.length) return "/default-car.png";
-    if (!images.length) return ["/car-image-err.png"];
+    if (!images.length) return [];
     return images;
   } catch (err) {
     console.log(getErrorMessage(err));

@@ -4,7 +4,6 @@ import {
   WikiSearchResponseItem,
   WikiPageMediaResponseItem,
 } from "@/services/wikimedia-api/types";
-import { getAnotherItemFromArray } from "@/utils/getAnotherItemFromArray";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 
 export const findWikiPages = async (
@@ -20,17 +19,20 @@ export const findWikiPages = async (
   url.searchParams.append("model", `${model}`);
   const requestUrl = url.toString();
   try {
-    const res = await fetch(requestUrl);
-    const json: WikiSearchResponse = await res.json();
-    console.log("wiki search result", json);
-    return json.pages;
+    const res: WikiSearchResponse = await fetch(requestUrl).then((res) =>
+      res.json()
+    );
+    console.log("wiki search result", res);
+    return res.pages;
   } catch (err) {
     console.log(err);
     return [];
   }
 };
 
-export const getImagesFromWikiPage = async (car: CarType, angle?: number) => {
+export const getImagesFromWikiPage = async (
+  car: CarType
+): Promise<string[]> => {
   try {
     const pages = await findWikiPages(car);
     console.log("findWikiPageTitles", pages);
@@ -44,31 +46,23 @@ export const getImagesFromWikiPage = async (car: CarType, angle?: number) => {
     );
 
     const requestUrl = url.toString();
-    const res = await fetch(requestUrl);
-    const json: { items: WikiPageMediaResponseItem[] | [] } = await res.json();
-    console.log("wiki car images client request json", json);
-    const images = json?.items?.length
-      ? filterWikiMediaListResults(json.items, car).map(
+    const res: { items: WikiPageMediaResponseItem[] } = await fetch(
+      requestUrl
+    ).then((res) => res.json());
+    console.log("page/media-list/TITLE response", res);
+    const images = res?.items?.length
+      ? filterWikiMediaListResults(res.items, car).map(
           (item) => `https:${item.srcset[0].src}`
         )
       : [];
-    if (images?.length) {
-      console.log(images);
-      // if (!images.length) return "/default-car.png";
-      if (!images?.length) return "/car-image-err.png";
-      return angle ? getAnotherItemFromArray(images, angle) : images[0];
-    } else {
-      console.log("wiki client request: item not found");
-      return "/car-image-err.png";
-    }
-  } catch (err) {
-    const message =
-      err instanceof Error
-        ? err.message
-        : "failed to get a car image from wikipedia";
-    console.log("getCarImageFromWiki / catch", message);
 
-    return "/car-image-err.png";
+    console.log("getImagesFromWikiPage: ", images);
+    // if (!images.length) return "/default-car.png";
+    if (!images?.length) return [];
+    return images;
+  } catch (err) {
+    console.log("getCarImageFromWiki / catch", getErrorMessage(err));
+    return ["/car-image-err.png"];
   }
 };
 
@@ -111,13 +105,13 @@ const getWikimediaFileLink = async (fileKey: string) => {
     const res = await fetch(requestUrl).then((res) => res.json());
     return res?.link;
   } catch (err) {
-    return "/car-image-err.png";
+    // return "/car-image-err.png";
+    return null;
   }
 };
 
 export const getImagesFromWikiCommons = async (
   car: CarType
-  // angle?: number
 ): Promise<string[]> => {
   try {
     const filesKeys = await findWikimediaImagesKeys(car);
@@ -133,7 +127,7 @@ export const getImagesFromWikiCommons = async (
       }
     }
     console.log("wiki commons request links", links);
-    if (!links.length) return ["/car-image-err.png"];
+    if (!links.length) return [];
     return links;
   } catch (err) {
     console.log(getErrorMessage(err));
@@ -153,6 +147,7 @@ export function selectWikiArticle(
       item.title.toLowerCase().includes(`${modelWords[0]}`)
     // modelWords.every((word) => item.image.contextLink.includes(word))
   );
+  // return data[0];
 }
 
 function filterWikiMediaListResults(
@@ -160,23 +155,59 @@ function filterWikiMediaListResults(
   car: CarType
 ) {
   const { make, model, year } = car;
-  const modelWords = model.split(" ");
+  const modelWithoutShorWords = model.replace(" 2wd", "").replace(" fwd", "");
 
-  return data.filter(
+  const modelWords = modelWithoutShorWords.split(" ");
+
+  const items = data.filter(
     (item) =>
+      (!modelWithoutShorWords.includes("wagon")
+        ? !item.title.toLowerCase().includes("wagon")
+        : true) &&
+      (!modelWithoutShorWords.includes("convertible")
+        ? !item.title.toLowerCase().includes("convertible")
+        : true) &&
+      (!modelWithoutShorWords.includes("roadster")
+        ? !item.title.toLowerCase().includes("roadster")
+        : true) &&
+      (!modelWithoutShorWords.includes("cabriolet")
+        ? !item.title.toLowerCase().includes("cabriolet")
+        : true) &&
+      (!modelWithoutShorWords.includes("coupe")
+        ? !item.title.toLowerCase().includes("coupe")
+        : true) &&
       item.type === "image" &&
       item.title.toLowerCase().includes(make) &&
       item.title.includes(`${year}`) &&
       modelWords.every((word) => item.title.toLowerCase().includes(word))
   );
+  console.log("filter Wiki MediaList Results", items);
+  return items;
 }
 
 function filterWikiSearchResults(data: WikiSearchResponseItem[], car: CarType) {
   const { make, model, year } = car;
-  const modelWords = model.split(" ");
+  const modelWithoutShorWords = model.replace(" 2wd", "").replace(" fwd", "");
+
+  const modelWords = modelWithoutShorWords.split(" ");
 
   const items = data.filter(
     (item) =>
+      (!modelWithoutShorWords.includes("wagon")
+        ? !item.title.toLowerCase().includes("wagon")
+        : true) &&
+      (!modelWithoutShorWords.includes("convertible")
+        ? !item.title.toLowerCase().includes("convertible")
+        : true) &&
+      (!modelWithoutShorWords.includes("roadster")
+        ? !item.title.toLowerCase().includes("roadster")
+        : true) &&
+      (!modelWithoutShorWords.includes("cabriolet")
+        ? !item.title.toLowerCase().includes("cabriolet")
+        : true) &&
+      (!modelWithoutShorWords.includes("coupe")
+        ? !item.title.toLowerCase().includes("coupe")
+        : true) &&
       (item.title.toLowerCase().includes(".jpg") ||
         item.title.toLowerCase().includes(".png")) &&
       item.title.toLowerCase().includes(make) &&

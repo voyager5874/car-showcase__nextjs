@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { updateSearchParams } from "@/utils/updateSearchParams";
 import { carManufacturers } from "@/constants";
 import { SearchableOptions } from "@/components/SearchableOptions";
-import { GetModelsForMakeResponse } from "@/services/nhtsa/types";
+import { getModelsForMake } from "@/services/nhtsa/actions";
 
 const SearchButton = ({ className }: HTMLProps<HTMLButtonElement>) => (
   <button type="submit" className={`z-10 ${className}`}>
@@ -33,20 +33,8 @@ export const SearchBar = () => {
   useEffect(() => {
     if (!manufacturer) return;
     const fetchModels = async () => {
-      try {
-        const res: GetModelsForMakeResponse = await fetch(
-          `https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/${manufacturer}?format=json`
-        ).then((res) => res.json());
-        console.log("models", res.Results);
-        const optionsWithId = res.Results.map((item) => ({
-          id: item.Model_ID,
-          name: item.Model_Name,
-        }));
-        const options = res.Results.map((item) => item.Model_Name);
-        setModelOptions(options);
-      } catch (err) {
-        setModelOptions([]);
-      }
+      const models = await getModelsForMake(manufacturer);
+      setModelOptions(models);
     };
     fetchModels().then((_) => {});
   }, [manufacturer]);
