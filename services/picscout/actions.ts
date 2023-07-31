@@ -37,7 +37,7 @@ export const findImages = async (
 
 async function filterResults(data: PicScoutResponseItem[], car: CarType) {
   const { make, model, year } = car;
-  const modelWithoutShorWords = model.replace(" 2wd", "");
+  const modelWithoutShorWords = model.replace(" 2wd", "").replace(" fwd", "");
   const modelWords = removeBetweenBrackets(modelWithoutShorWords).split(" ");
   // todo: having modelName and modelName + "sport" atc. filter for the first car should use !model.includes("sport")
   // somehow "outlander sport" yields more results than just "outlander"
