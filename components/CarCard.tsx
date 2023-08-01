@@ -15,7 +15,7 @@ import {
 } from "@/services/wikimedia-api/actions";
 import { findImageWithGoogle } from "@/services/google-cse/actions";
 import { IMAGIN_STUDIO_API_YEAR } from "@/constants/app-settings";
-import { Switch } from "@headlessui/react";
+import { LoadingButton } from "@/components/LoadingButton";
 
 type PropsType = {
   car: CarType;
@@ -27,7 +27,8 @@ export const CarCard = ({ car }: PropsType) => {
   const [isOpen, setIsOpen] = useState(false);
   const [images, setImages] = useState<string[]>([]);
 
-  const [useScraper, setUseScraper] = useState(false);
+  const [scraping, setScraping] = useState(false);
+  const [scraped, setScraped] = useState(false);
 
   const carRent = calculateCarRent(city_mpg, year);
 
@@ -56,19 +57,21 @@ export const CarCard = ({ car }: PropsType) => {
     fetch().then((_) => {});
   }, [car.model, car.year, car.make]);
 
-  useEffect(() => {
-    if (!useScraper) return;
-    const fetch = async () => {
-      if (useScraper) {
-        // const scraped = await scrapeImagesFromWebSearchClientside(car);
-        const scraped = await scrapeImages(car);
-        if (scraped.length && scraped[0] !== "/car-image-err.png") {
-          setImages((prev) => [...prev, ...scraped]);
-        }
+  const scrapeMoreImages = async () => {
+    setScraping(true);
+    try {
+      const scraped = await scrapeImages(car);
+      if (scraped.length) {
+        setImages((prev) => [...prev, ...scraped]);
       }
-    };
-    fetch().then((_) => {});
-  }, [useScraper]);
+      if (!scraped.length && !images.length) {
+        setImages(["/car-image-err.png"]);
+      }
+    } finally {
+      setScraping(false);
+      setScraped(true);
+    }
+  };
 
   const handleImageError = (item: string | number) => {
     const cleaned = images.filter((url) => url !== item);
@@ -84,29 +87,15 @@ export const CarCard = ({ car }: PropsType) => {
         <h5 className="text-xs">{year}</h5>
       </div>
       {Number(car.year) < IMAGIN_STUDIO_API_YEAR && (
-        <Switch.Group className="flex flex-row" as="div">
-          <Switch.Description as={"span"} className="mr-1">
-            web search (slow)
-          </Switch.Description>
-          <Switch
-            checked={useScraper}
-            onChange={setUseScraper}
-            className={`${
-              useScraper ? "bg-blue-600" : "bg-gray-200"
-            } relative inline-flex h-6 w-10 items-center rounded-full transition-colors focus:outline-none`}
-          >
-            <span className="sr-only">
-              use web search scraping to possibly get more images. Slow
-            </span>
-            <span
-              className={`${
-                useScraper ? "translate-x-5" : "translate-x-1"
-              } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-            />
-          </Switch>
-        </Switch.Group>
+        <LoadingButton
+          disabled={scraped}
+          onClick={scrapeMoreImages}
+          loading={scraping}
+          className="bg-blue-500 mt-1 pr-3 pl-7 text-xs"
+        >
+          scrape more
+        </LoadingButton>
       )}
-
       <p className="flex mt-6 text-[32px] leading-[38px] font-extrabold">
         <span className="self-start text-[14px] leading-[17px] font-semibold">
           $
