@@ -137,5 +137,5 @@ export async function isValidImageUrl(url: string) {
   });
 }
 
-// todo add some opt in / opt out element (checkbox) and run on the client
+// todo add some opt in / opt out element (checkbox), create simple backend
 // in case of deployment to vercel
