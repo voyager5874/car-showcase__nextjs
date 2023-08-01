@@ -24,39 +24,43 @@ export const findImageWithGoogle = async (car: CarType) => {
     return images;
   } catch (err) {
     console.log(getErrorMessage(err));
-    return ["/car-image-err.png"];
+    return [];
   }
 };
 
 function filterResults(data: GoggleResponseItem[], car: CarType) {
   const { make, model, year } = car;
-  const modelWithoutShorWords = model.replace(" 2wd", "").replace(" fwd", "");
+  const modelWithoutShortWords = model.replace(" 2wd", "").replace(" fwd", "");
 
-  const modelWords = modelWithoutShorWords.split(" ");
+  const modelWords = modelWithoutShortWords.split(" ");
 
-  return data.filter(
+  const items = data.filter(
     (item: GoggleResponseItem) =>
-      (!modelWithoutShorWords.includes("wagon")
+      (!modelWithoutShortWords.includes("wagon")
         ? !item.title.toLowerCase().includes("wagon")
         : true) &&
-      (!modelWithoutShorWords.includes("convertible")
+      (!modelWithoutShortWords.includes("convertible")
         ? !item.title.toLowerCase().includes("convertible")
         : true) &&
-      (!modelWithoutShorWords.includes("roadster")
+      (!modelWithoutShortWords.includes("roadster")
         ? !item.title.toLowerCase().includes("roadster")
         : true) &&
-      (!modelWithoutShorWords.includes("cabriolet")
+      (!modelWithoutShortWords.includes("cabriolet")
         ? !item.title.toLowerCase().includes("cabriolet")
         : true) &&
-      (!modelWithoutShorWords.includes("coupe")
+      (!modelWithoutShortWords.includes("coupe")
         ? !item.title.toLowerCase().includes("coupe")
         : true) &&
       item.title.toLowerCase().includes(make) &&
+      item.title.toLowerCase().includes(modelWords[0]) &&
       (item.title.includes(`${year}`) ||
         item.image.contextLink.includes(`${year}`)) &&
-      // item.image.contextLink.includes(`${modelWords[0]}`) &&
-      modelWords.every((word) =>
-        item.image.contextLink.toLowerCase().includes(word)
-      )
+      true
+    // item.image.contextLink.includes(`${modelWithoutShortWords[0]}`) &&
+    // modelWithoutShortWords.every((word) =>
+    //   item.image.contextLink.toLowerCase().includes(word)
+    // )
   );
+  console.log(`gse filter output for ${make} ${model}`, items);
+  return items;
 }

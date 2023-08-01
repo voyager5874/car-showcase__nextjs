@@ -7,7 +7,7 @@ import { Button } from "./Button";
 import { CarDetails } from "./CarDetails";
 import { calculateCarRent } from "@/utils";
 import { CarImage } from "@/components/CarImage";
-import { findImages } from "@/services/picscout/actions";
+import { scrapeImages } from "@/services/picscout/actions";
 import { getCarImagesList } from "@/services/imagin-studio-api/actions";
 import {
   getImagesFromWikiCommons,
@@ -15,6 +15,7 @@ import {
 } from "@/services/wikimedia-api/actions";
 import { findImageWithGoogle } from "@/services/google-cse/actions";
 import { IMAGIN_STUDIO_API_YEAR } from "@/constants/app-settings";
+import { Switch } from "@headlessui/react";
 
 type PropsType = {
   car: CarType;
@@ -24,7 +25,9 @@ export const CarCard = ({ car }: PropsType) => {
   const { city_mpg, year, make, model, transmission, drive } = car;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [images, setImages] = useState<string[]>(["/default-car.png"]);
+  const [images, setImages] = useState<string[]>([]);
+
+  const [useScraper, setUseScraper] = useState(false);
 
   const carRent = calculateCarRent(city_mpg, year);
 
@@ -48,16 +51,30 @@ export const CarCard = ({ car }: PropsType) => {
           finalList = [...finalList, ...gseResult];
         }
       }
-      // if (finalList.length < 4) {
-      //   const scraped = await findImages(car);
-      //   if (scraped.length && scraped[0] !== "/car-image-err.png") {
-      //     finalList = [...finalList, ...scraped];
-      //   }
-      // }
       setImages(finalList);
     };
     fetch().then((_) => {});
   }, [car.model, car.year, car.make]);
+
+  useEffect(() => {
+    if (!useScraper) return;
+    const fetch = async () => {
+      if (useScraper) {
+        // const scraped = await scrapeImagesFromWebSearchClientside(car);
+        const scraped = await scrapeImages(car);
+        if (scraped.length && scraped[0] !== "/car-image-err.png") {
+          setImages((prev) => [...prev, ...scraped]);
+        }
+      }
+    };
+    fetch().then((_) => {});
+  }, [useScraper]);
+
+  const handleImageError = (item: string | number) => {
+    const cleaned = images.filter((url) => url !== item);
+    setImages(cleaned);
+  };
+
   return (
     <div className="flex flex-col p-6 justify-center items-start text-black-100 bg-primary-blue-100 hover:bg-white hover:shadow-md rounded-3xl group">
       <div className="w-full flex justify-between items-start gap-2">
@@ -66,6 +83,29 @@ export const CarCard = ({ car }: PropsType) => {
         </h2>
         <h5 className="text-xs">{year}</h5>
       </div>
+      {Number(car.year) < IMAGIN_STUDIO_API_YEAR && (
+        <Switch.Group className="flex flex-row" as="div">
+          <Switch.Description as={"span"} className="mr-1">
+            web search (slow)
+          </Switch.Description>
+          <Switch
+            checked={useScraper}
+            onChange={setUseScraper}
+            className={`${
+              useScraper ? "bg-blue-600" : "bg-gray-200"
+            } relative inline-flex h-6 w-10 items-center rounded-full transition-colors focus:outline-none`}
+          >
+            <span className="sr-only">
+              use web search scraping to possibly get more images. Slow
+            </span>
+            <span
+              className={`${
+                useScraper ? "translate-x-5" : "translate-x-1"
+              } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+            />
+          </Switch>
+        </Switch.Group>
+      )}
 
       <p className="flex mt-6 text-[32px] leading-[38px] font-extrabold">
         <span className="self-start text-[14px] leading-[17px] font-semibold">
@@ -78,7 +118,7 @@ export const CarCard = ({ car }: PropsType) => {
       </p>
 
       <div className="relative w-full h-40 my-3 object-contain">
-        <CarImage car={car} images={images} />
+        <CarImage car={car} images={images} onImageError={handleImageError} />
       </div>
 
       <div className="relative flex w-full mt-2">

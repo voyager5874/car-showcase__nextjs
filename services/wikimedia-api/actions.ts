@@ -62,7 +62,7 @@ export const getImagesFromWikiPage = async (
     return images;
   } catch (err) {
     console.log("getCarImageFromWiki / catch", getErrorMessage(err));
-    return ["/car-image-err.png"];
+    return [];
   }
 };
 
@@ -131,7 +131,7 @@ export const getImagesFromWikiCommons = async (
     return links;
   } catch (err) {
     console.log(getErrorMessage(err));
-    return ["/car-image-err.png"];
+    return [];
   }
 };
 
@@ -155,25 +155,25 @@ function filterWikiMediaListResults(
   car: CarType
 ) {
   const { make, model, year } = car;
-  const modelWithoutShorWords = model.replace(" 2wd", "").replace(" fwd", "");
+  const modelWithoutShortWords = model.replace(" 2wd", "").replace(" fwd", "");
 
-  const modelWords = modelWithoutShorWords.split(" ");
+  const modelWords = modelWithoutShortWords.split(" ");
 
   const items = data.filter(
     (item) =>
-      (!modelWithoutShorWords.includes("wagon")
+      (!modelWithoutShortWords.includes("wagon")
         ? !item.title.toLowerCase().includes("wagon")
         : true) &&
-      (!modelWithoutShorWords.includes("convertible")
+      (!modelWithoutShortWords.includes("convertible")
         ? !item.title.toLowerCase().includes("convertible")
         : true) &&
-      (!modelWithoutShorWords.includes("roadster")
+      (!modelWithoutShortWords.includes("roadster")
         ? !item.title.toLowerCase().includes("roadster")
         : true) &&
-      (!modelWithoutShorWords.includes("cabriolet")
+      (!modelWithoutShortWords.includes("cabriolet")
         ? !item.title.toLowerCase().includes("cabriolet")
         : true) &&
-      (!modelWithoutShorWords.includes("coupe")
+      (!modelWithoutShortWords.includes("coupe")
         ? !item.title.toLowerCase().includes("coupe")
         : true) &&
       item.type === "image" &&

@@ -59,7 +59,7 @@ export const CarDetails = ({ isOpen, closeModal, car, images }: PropsType) => {
                       <CarImage
                         car={car}
                         images={images}
-                        tailwindClasses="object-cover object-top"
+                        tailwindClasses="object-cover"
                       />
                     </div>
                     <div className="flex gap-3">

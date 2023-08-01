@@ -10,25 +10,25 @@ export const getCarImage = async (car: CarType, angle?: number) => {
   url.searchParams.append("modelYear", `${year}`);
   const requestUrl = url.toString();
   try {
-    const res = await fetch(requestUrl);
-    const blob = await res.blob();
-    return URL.createObjectURL(blob);
+    const res = await fetch(requestUrl).then((res) => res.blob());
+    return URL.createObjectURL(res);
   } catch (err) {
     console.log(getErrorMessage(err));
-    return "/car-image-err.png";
+    return null;
   }
 };
 
 export const getCarImagesList = async (car: CarType) => {
   try {
-    return await Promise.all([
+    const res = await Promise.all([
       getCarImage(car),
       getCarImage(car, 29), //front
       getCarImage(car, 33), //top
       getCarImage(car, 13), //rear
     ]);
+    return res.filter((item) => Boolean(item)) as string[]; //Url?
   } catch (err) {
     console.log(getErrorMessage(err));
-    return ["/car-image-err.png"];
+    return [];
   }
 };

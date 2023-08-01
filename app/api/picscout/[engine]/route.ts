@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 import PicScout from "picscout";
-
+// scraping doesn't comply with vercel fair use policy https://vercel.com/docs/concepts/limits/fair-use-policy
+// Must be running on the client side, but this causes CORS error.
+// create some express server to do all the scraping and provide an api
 type Param = {
   params: {
     engine: "bing" | "google" | "duckduckgo";
