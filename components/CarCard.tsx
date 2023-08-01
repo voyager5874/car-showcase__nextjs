@@ -48,12 +48,12 @@ export const CarCard = ({ car }: PropsType) => {
           finalList = [...finalList, ...gseResult];
         }
       }
-      if (finalList.length < 4) {
-        const scraped = await findImages(car);
-        if (scraped.length && scraped[0] !== "/car-image-err.png") {
-          finalList = [...finalList, ...scraped];
-        }
-      }
+      // if (finalList.length < 4) {
+      //   const scraped = await findImages(car);
+      //   if (scraped.length && scraped[0] !== "/car-image-err.png") {
+      //     finalList = [...finalList, ...scraped];
+      //   }
+      // }
       setImages(finalList);
     };
     fetch().then((_) => {});
