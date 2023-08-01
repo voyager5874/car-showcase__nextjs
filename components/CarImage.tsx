@@ -60,6 +60,7 @@ export const CarImage = ({ angle, car, images, tailwindClasses }: Props) => {
   return (
     <>
       <Image
+        unoptimized
         src={imageUrl || "/default-car.png"}
         onError={handleImageError}
         alt="car model"
